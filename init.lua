@@ -68,11 +68,15 @@ require('lazy').setup({
 
       -- Adds a number of user-friendly snippets
       'rafamadriz/friendly-snippets',
+
+      -- 'hrsh7th/cmp-nvim-lsp-signature-help',
     },
   },
 
+  'ray-x/lsp_signature.nvim',
+
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -495,8 +499,10 @@ local on_attach = function(_, bufnr)
   nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
   -- See `:help K` for why this keymap
-  nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
+  nmap('<C-h>', vim.lsp.buf.hover, 'Hover Documentation')
   nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  vim.keymap.set('i', '<C-h>', vim.lsp.buf.hover)
+  vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help)
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -510,13 +516,20 @@ local on_attach = function(_, bufnr)
   vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
     vim.lsp.buf.format()
   end, { desc = 'Format current buffer with LSP' })
+
+  require 'lsp_signature'.on_attach({
+    bind = true,
+    handler_opts = {
+      border = 'single',
+    }
+  }, bufnr)
 end
 
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', 'n', 'nzz')
 vim.keymap.set('n', 'N', 'Nzz')
-vim.keymap.set('x', '<leader>p', '"_dP', { desc = '[P]aste (better)'})
+vim.keymap.set('x', '<leader>p', '"_dP', { desc = '[P]aste (better)' })
 
 -- document existing key chains
 require('which-key').register {
@@ -569,10 +582,10 @@ local servers = {
 
 -- Format on writes
 vim.api.nvim_create_autocmd('BufWritePre', {
-	buffer = vim.fn.bufnr(),
-	callback = function()
-		vim.lsp.buf.format({ timeout_ms = 3000 })
-	end,
+  buffer = vim.fn.bufnr(),
+  callback = function()
+    vim.lsp.buf.format({ timeout_ms = 3000 })
+  end,
 })
 
 -- Setup neovim lua configuration
@@ -635,22 +648,22 @@ cmp.setup {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
     { name = 'path' },
+    -- { name = 'nvim_lsp_signature_help' },
   },
 }
-vim.keymap.set('n', '<C-h>', vim.lsp.buf.hover)
 
 -- DAP settings
 require('telescope').load_extension('dap')
-vim.keymap.set('n', '<F5>', require'dap'.continue)
-vim.keymap.set('n', '<F1>', require'dap'.step_into)
-vim.keymap.set('n', '<F2>', require'dap'.step_over)
-vim.keymap.set('n', '<F3>', require'dap'.step_out)
-vim.keymap.set('n', '<leader>db', require'dap'.toggle_breakpoint, { desc = '[B]reakpoint' })
-vim.keymap.set('n', '<leader>dB', function ()
-  require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))
+vim.keymap.set('n', '<F5>', require 'dap'.continue)
+vim.keymap.set('n', '<F1>', require 'dap'.step_into)
+vim.keymap.set('n', '<F2>', require 'dap'.step_over)
+vim.keymap.set('n', '<F3>', require 'dap'.step_out)
+vim.keymap.set('n', '<leader>db', require 'dap'.toggle_breakpoint, { desc = '[B]reakpoint' })
+vim.keymap.set('n', '<leader>dB', function()
+  require 'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))
 end, { desc = '[B]reakpoint conditional' })
-vim.keymap.set('n', '<leader>dr', require'dap'.repl.open, { desc = '[R]epl' })
-vim.keymap.set('n', '<leader>dt', require'dap-go'.debug_test, { desc = '[T]est (debug)' })
+vim.keymap.set('n', '<leader>dr', require 'dap'.repl.open, { desc = '[R]epl' })
+vim.keymap.set('n', '<leader>dt', require 'dap-go'.debug_test, { desc = '[T]est (debug)' })
 
 require('lightspeed').setup({
   ignore_case = true
@@ -670,4 +683,3 @@ vim.api.nvim_create_autocmd('FileType', {
   end
 })
 ]]
-
