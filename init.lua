@@ -397,7 +397,7 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 vim.keymap.set('n', 'U', ':redo<cr>')
 vim.keymap.set('n', 's', '<Plug>Lightspeed_omni_s')
 
-if (vim.fn.has('win64') or vim.fn.has('win32')) then
+if (vim.fn.has('win64') == 1 or vim.fn.has('win32') == 1) then
   require 'nvim-treesitter.install'.compilers = { "clang" }
 else
   require 'nvim-treesitter.install'.compilers = { "gcc" }
