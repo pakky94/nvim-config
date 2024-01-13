@@ -67,11 +67,8 @@ local on_attach = function(_, bufnr)
   -- nmap('<leader>ls', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
   nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
-  -- See `:help K` for why this keymap
-  nmap('<C-h>', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
-  vim.keymap.set('i', '<C-h>', vim.lsp.buf.hover)
-  vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help)
+  vim.keymap.set({ 'n', 'i' }, '<C-h>', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
+  vim.keymap.set({ 'n', 'i' }, '<C-k>', vim.lsp.buf.signature_help, { desc = 'Signature Documentation' })
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
