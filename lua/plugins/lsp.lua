@@ -7,7 +7,7 @@ return {
     'folke/neodev.nvim',
     'ray-x/lsp_signature.nvim',
   },
-  config = function ()
+  config = function()
     local on_attach = function(_, bufnr)
       local nmap = function(keys, func, desc)
         if desc then
@@ -40,6 +40,14 @@ return {
       vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
         vim.lsp.buf.format()
       end, { desc = 'Format current buffer with LSP' })
+
+      -- [[ Format on writes ]]
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        buffer = vim.fn.bufnr(),
+        callback = function()
+          vim.lsp.buf.format({ timeout_ms = 3000 })
+        end,
+      })
 
       require 'lsp_signature'.on_attach({
         bind = true,
