@@ -3,11 +3,9 @@ return {
   dependencies = {
     'tpope/vim-repeat',
   },
-  opts = {
-    ignore_case = true
-  },
-  config = function (_, opts)
-    require'lightspeed'.setup(opts)
+  opts = {},
+  config = function(_, opts)
+    require 'lightspeed'.setup(opts)
     vim.keymap.set('n', 's', '<Plug>Lightspeed_omni_s')
   end,
 }
