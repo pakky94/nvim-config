@@ -9,8 +9,6 @@ vim.wo.relativenumber = true
 vim.o.scrolloff = 5
 vim.o.mouse = 'a'
 
-vim.o.clipboard = 'unnamedplus'
-
 vim.o.breakindent = true
 
 vim.o.undofile = true
@@ -43,3 +41,22 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = highlight_group,
   pattern = '*',
 })
+
+-- Always use clipboard
+-- vim.o.clipboard = 'unnamedplus'
+
+-- WSL copy/paste from clipboard
+if (vim.fn.has('wsl') == 1) then
+  vim.cmd [[let g:clipboard = {
+  \   'name': 'WslClipboard',
+  \   'copy': {
+  \      '+': 'clip.exe',
+  \      '*': 'clip.exe',
+  \    },
+  \   'paste': {
+  \      '+': 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+  \      '*': 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+  \   },
+  \   'cache_enabled': 0,
+  \ }]]
+end
