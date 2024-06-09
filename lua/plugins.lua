@@ -7,7 +7,7 @@ return {
   'tpope/vim-sleuth',
 
   -- DAP
-  'leoluz/nvim-dap-go',
+  -- 'leoluz/nvim-dap-go',
 
   -- Useful plugin to show you pending keybinds.
   { 'folke/which-key.nvim',  opts = {} },

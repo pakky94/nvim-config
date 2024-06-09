@@ -1,14 +1,23 @@
 return {
   'mfussenegger/nvim-dap',
-  tag = '0.7.0',
   dependencies = {
     {
       'rcarriga/nvim-dap-ui',
-      tag = 'v3.9.1',
+      dependencies = {
+        'nvim-neotest/nvim-nio'
+      }
     },
     'theHamsta/nvim-dap-virtual-text',
+    {
+      "williamboman/mason.nvim",
+      opts = { ensure_installed = { "delve" } },
+    },
+    {
+      "leoluz/nvim-dap-go",
+      config = true,
+    }
   },
-  config = function ()
+  config = function()
     require('telescope').load_extension('dap')
     vim.keymap.set('n', '<F5>', require 'dap'.continue)
     vim.keymap.set('n', '<F1>', require 'dap'.step_into)
@@ -19,5 +28,21 @@ return {
       require 'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))
     end, { desc = '[B]reakpoint conditional' })
     vim.keymap.set('n', '<leader>dr', require 'dap'.repl.open, { desc = '[R]epl' })
+    vim.keymap.set('n', '<leader>du', require 'dapui'.toggle, { desc = '[U]i (toggle)' })
+
+    require('dapui').setup()
+    require('nvim-dap-virtual-text').setup()
+
+    -- Start dapui when debugging
+    local dap, dapui = require('dap'), require('dapui')
+    dap.listeners.after.event_initialized['dapui_config'] = function()
+      dapui.open()
+    end
+    dap.listeners.before.event_terminated['dapui_config'] = function()
+      dapui.close()
+    end
+    dap.listeners.before.event_exited['dapui_config'] = function()
+      dapui.close()
+    end
   end
 }

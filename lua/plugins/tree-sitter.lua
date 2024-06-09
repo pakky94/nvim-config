@@ -4,7 +4,7 @@ return {
     'nvim-treesitter/nvim-treesitter-textobjects',
   },
   build = ':TSUpdate',
-  config = function ()
+  config = function()
     if (vim.fn.has('win64') == 1 or vim.fn.has('win32') == 1) then
       require 'nvim-treesitter.install'.compilers = { "clang" }
     else
