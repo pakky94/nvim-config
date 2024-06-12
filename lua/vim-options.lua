@@ -46,17 +46,43 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- vim.o.clipboard = 'unnamedplus'
 
 -- WSL copy/paste from clipboard
-if (vim.fn.has('wsl') == 1) then
-  vim.cmd [[let g:clipboard = {
-  \   'name': 'WslClipboard',
-  \   'copy': {
-  \      '+': 'clip.exe',
-  \      '*': 'clip.exe',
-  \    },
-  \   'paste': {
-  \      '+': 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-  \      '*': 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-  \   },
-  \   'cache_enabled': 0,
-  \ }]]
-end
+--if (vim.fn.has('wsl') == 1) then
+--  vim.cmd [[let g:clipboard = {
+--  \   'name': 'WslClipboard',
+--  \   'copy': {
+--  \      '+': 'clip.exe',
+--  \      '*': 'clip.exe',
+--  \    },
+--  \   'paste': {
+--  \      '+': 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+--  \      '*': 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+--  \   },
+--  \   'cache_enabled': 0,
+--  \ }]]
+--end
+
+-- OSC 52 not yet working in alacritty / wezterm
+vim.g.clipboard = {
+  name = 'OSC 52',
+  copy = {
+    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+  },
+  paste = {
+    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+  },
+}
+
+--[[
+-- Use OSC 52 only for yank
+vim.api.nvim_create_autocmd('TextYankPost', {
+  callback = function()
+    vim.highlight.on_yank()
+    local copy_to_unnamedplus = require('vim.ui.clipboard.osc52').copy('+')
+    copy_to_unnamedplus(vim.v.event.regcontents)
+    local copy_to_unnamed = require('vim.ui.clipboard.osc52').copy('*')
+    copy_to_unnamed(vim.v.event.regcontents)
+  end
+})
+--]]
